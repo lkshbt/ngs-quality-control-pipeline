@@ -10,5 +10,3 @@ results/*
 !results/fastqc/
 results/fastqc/*
 !results/fastqc/summary.txt
-
-examples/

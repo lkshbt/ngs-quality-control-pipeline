@@ -54,3 +54,26 @@ This project performs basic read-level QC. It does not perform adapter trimming,
 
 ## Author
 Lakshay Saini
+
+## Quality Control Results
+
+Analysis of the first 10,000 reads from dataset SRR1553426.
+
+### Read Length Distribution
+![Read length distribution](examples/read_length.png)
+
+### GC Content Distribution
+![GC content distribution](examples/gc_content.png)
+
+### Mean Phred Quality Distribution
+![Mean Phred quality distribution](examples/read_quality.png)
+
+### Summary Statistics
+
+| Metric | Result |
+|---|---:|
+| Reads analyzed | 10,000 |
+| Mean read length | 101 bases |
+| Mean GC content | 42.16% |
+| Mean read quality | 37.52 |
+| Reads flagged below mean Q20 | 82 |

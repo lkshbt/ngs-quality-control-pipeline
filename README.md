@@ -125,7 +125,3 @@ Future Improvements
 - Add configurable input paths and read limits.
 - Generate a combined quality-control report.
 - Extend the workflow to support larger datasets and reproducible pipeline execution.
-
-License
-
-A license has not yet been specified. Add an appropriate open-source license before encouraging reuse or redistribution.

@@ -1,44 +1,61 @@
+
 NGS Read Quality Control Pipeline
 
-A Python-based bioinformatics project for analyzing FASTQ sequencing reads, calculating read-level quality metrics, and generating quality-control reports and visualizations.
+A Python-based bioinformatics workflow for analyzing next-generation sequencing (NGS) reads, calculating read-level quality metrics, and generating quality-control visualizations.
 
 Author: Lakshay Saini
+Focus Areas: NGS · Bioinformatics · Python · Sequencing Quality Control
+
+---
 
 Project Overview
 
-Next-generation sequencing (NGS) produces large amounts of sequencing data that must be evaluated before downstream analysis. This project implements a lightweight Python workflow to summarize read length, GC content, and Phred quality scores from compressed FASTQ files.
+Next-generation sequencing generates large volumes of sequencing data that must be assessed before downstream analysis. This project implements a lightweight Python pipeline to summarize sequencing-read characteristics from gzipped FASTQ files.
 
-The project also includes a FastQC report for examining additional sequencing quality indicators.
+The workflow calculates read length, GC content, and mean Phred quality scores, flags reads below a predefined quality threshold, and generates summary reports and visualizations. A separate FastQC report provides additional quality indicators for interpretation.
 
-Features
+Key Features
 
-- Parse FASTQ and gzipped FASTQ files
-- Calculate read length and GC content
-- Calculate mean Phred quality per read
-- Flag reads with mean Phred quality below Q20
-- Export read-level metrics to CSV
-- Generate summary statistics in JSON format
-- Create three quality-control plots
-- Examine FastQC reports and quality warnings
+- Parse gzipped FASTQ files using Biopython.
+- Calculate read length and GC content for individual reads.
+- Calculate mean Phred quality scores.
+- Flag reads with mean quality below Q20.
+- Export read-level metrics to CSV.
+- Generate aggregate statistics in JSON format.
+- Create histograms for read length, GC content, and mean quality.
+- Support additional quality assessment through FastQC.
 
-Technologies
+Technologies Used
 
-- Python 3
-- Biopython
-- pandas
-- Matplotlib
-- FastQC
-- Git and GitHub
+Tool| Purpose
+Python 3| Pipeline implementation
+Biopython| FASTQ parsing and sequence processing
+pandas| Data handling and CSV export
+Matplotlib| Quality-control visualizations
+FastQC| Independent sequencing quality assessment
+Git and GitHub| Version control and project hosting
+
+Workflow
+
+1. Obtain sequencing reads in gzipped FASTQ format.
+2. Parse reads and extract nucleotide sequences and Phred quality scores.
+3. Calculate read length, GC percentage, and mean quality.
+4. Flag reads with mean quality below Q20.
+5. Export per-read metrics and aggregate statistics.
+6. Generate quality-control plots.
+7. Run FastQC separately and interpret its report.
 
 Dataset
 
-- Accession: SRR1553426
+- Accession: "SRR1553426" (https://www.ebi.ac.uk/ena/browser/view/SRR1553426)
 - Source: European Nucleotide Archive (ENA)
-- Input format: Compressed FASTQ (".fastq.gz")
+- Expected input: "data/reads.fastq.gz"
 
-Raw sequencing data is not included in this repository. Download the dataset separately and place the input file at "data/reads.fastq.gz".
+Raw sequencing data is not included in this repository. Download the appropriate gzipped FASTQ file and place it at the expected input path before running the pipeline.
 
 Installation
+
+Clone the repository and create a virtual environment:
 
 git clone https://github.com/lkshbt/ngs-quality-control-pipeline.git
 cd ngs-quality-control-pipeline
@@ -48,31 +65,32 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 
-Usage
+Run the Pipeline
 
-1. Download the sequencing dataset.
-2. Save the compressed FASTQ file as "data/reads.fastq.gz".
-3. Activate the virtual environment.
-4. Run the analysis:
+Ensure the input file exists at "data/reads.fastq.gz", then execute:
 
 python src/qc_pipeline.py
 
-The Python pipeline analyzes up to 10,000 reads and saves the output files in "results/".
+The pipeline writes its output files to the "results/" directory.
+
+Processing limit: The current implementation analyzes up to 10,000 valid reads per run. Results therefore describe the analyzed subset rather than necessarily representing the entire dataset.
 
 Example Results
 
-The Python pipeline produced the following results for the analyzed subset:
+The following values were observed in one run on a 10,000-read subset.
 
-Metric| Result
+Metric| Observed result
 Reads analyzed| 10,000
 Mean read length| 101 bases
 Mean GC content| 42.16%
 Mean Phred quality| 37.52
 Reads with mean quality below Q20| 82
 
-These values describe the analyzed subset, not necessarily the entire sequencing dataset.
+These values depend on the input data and analyzed subset. They should not be interpreted as measurements of the entire sequencing dataset unless all reads have been analyzed.
 
 Quality-Control Visualizations
+
+The repository includes example plots generated by the pipeline.
 
 Read Length Distribution
 
@@ -86,42 +104,65 @@ Mean Phred Quality Distribution
 
 "Mean Phred quality distribution" (examples/read_quality.png)
 
-FastQC Results
+FastQC Assessment
 
-A separate FastQC report was generated for "reads.fastq.gz". Its summary reported:
+FastQC was run separately to examine additional sequencing-quality indicators.
+
+In one report generated for this dataset, the following modules were flagged:
 
 - PASS: Basic statistics, per-base sequence quality, per-sequence quality scores, per-sequence GC content, per-base N content, and sequence length distribution.
 - WARN: Per-base sequence content, overrepresented sequences, and adapter content.
 - FAIL: Sequence duplication levels.
 
-These results identify areas for further investigation. Duplication and adapter signals must be interpreted in the context of the sequencing library and experiment; a FastQC warning or failure alone does not establish that the data is unusable.
+These statuses indicate areas that may require further investigation. A warning or failure does not automatically mean that sequencing data is unusable. Interpretation depends on the sequencing library, experimental design, and biological context.
 
-View the "FastQC summary" (results/fastqc/summary.txt).
+To generate a FastQC report separately, install FastQC and run:
+
+fastqc data/reads.fastq.gz --outdir results/
+
+Open the generated HTML report in a browser. FastQC is not automatically invoked by the Python pipeline.
 
 Output Files
 
 File| Description
-"results/read_metrics.csv"| Read-level metrics
-"results/summary.json"| Summary statistics
-"results/read_length.png"| Read length distribution
-"results/gc_content.png"| GC content distribution
-"results/read_quality.png"| Mean Phred quality distribution
+"results/read_metrics.csv"| Per-read metrics and low-quality flags
+"results/summary.json"| Aggregate quality statistics
+"results/read_length.png"| Read length histogram
+"results/gc_content.png"| GC content histogram
+"results/read_quality.png"| Mean Phred quality histogram
 "results/reads_fastqc.html"| FastQC HTML report, if generated
-"results/fastqc/summary.txt"| FastQC module status summary
+"results/reads_fastqc.zip"| FastQC archive, if generated
 
-Generated files are not all committed to Git. The repository retains selected reports and example plots; raw sequencing data is excluded.
+Selected example plots are maintained in "examples/". Raw sequencing data and generated outputs are not all committed to Git.
 
 Limitations
 
-- The Python pipeline analyzes at most 10,000 reads per run.
-- The Q20 threshold is a screening criterion based on mean read quality.
-- FastQC module statuses require biological interpretation.
-- The project does not currently perform adapter trimming, read alignment, variant calling, or differential gene-expression analysis.
+- Currently supports gzipped FASTQ input.
+- Processes up to 10,000 valid reads per run.
+- Uses mean per-read Phred quality and a Q20 screening threshold; it does not replace per-base quality assessment.
+- Calculates GC percentage over A, C, G, and T bases only.
+- FastQC results require biological interpretation.
+- Does not currently perform adapter trimming, read alignment, variant calling, or differential gene-expression analysis.
 
 Future Improvements
 
-- Add automated tests and input validation.
+- Add automated tests and stronger input validation.
+- Make the input path and read limit configurable.
 - Integrate adapter trimming with Cutadapt.
-- Add configurable input paths and read limits.
-- Generate a combined quality-control report.
-- Extend the workflow to support larger datasets and reproducible pipeline execution.
+- Combine Python metrics and FastQC results into a unified report.
+- Extend the workflow for larger datasets and reproducible execution.
+
+Learning Outcomes
+
+Through this project, I practiced:
+
+- Processing sequencing data with Biopython.
+- Working with FASTQ records and Phred quality scores.
+- Calculating sequence-level quality metrics using Python.
+- Exporting structured results using pandas and JSON.
+- Visualizing sequencing metrics with Matplotlib.
+- Interpreting quality-control reports and documenting a reproducible bioinformatics workflow.
+
+---
+
+Project Repository: "ngs-quality-control-pipeline" (https://github.com/lkshbt/ngs-quality-control-pipeline)
